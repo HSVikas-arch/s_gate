@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="text-center mb-3">🔗 Share Document</h2>
+            <p class="text-center">Share <strong>{{ doc[0] }}</strong> with another user</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label>Share with user:</label>
+                    <select name="share_with" class="form-control" required>
+                        <option value="">Select user...</option>
+                        {% for user in users %}
+                            <option value="{{ user[0] }}">{{ user[0] }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button class="btn btn-primary w-100">Share Document</button>
+            </form>
+
+            <a href="{{ url_for('my_uploads') }}" class="btn btn-outline-secondary w-100 mt-3">← Back to My Uploads</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

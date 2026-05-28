@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Documents</h2>
+    
+    {% if docs %}
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Filename</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doc in docs %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ doc[1] }}</td>
+                        <td>
+                            <a href="{{ url_for('view_file', filename=doc[1]) }}" class="btn btn-sm btn-primary">📖 View</a>
+                            
+                            <!-- ✅ ADD THIS ANNOTATION BUTTON -->
+                            <button onclick='addAnnotation({{ doc[0] }}, "{{ doc[1] }}")' class="btn btn-sm btn-info">
+                                ✏️ Annotate
+                            </button>
+                            
+                            <!-- Cite Button with Dropdown -->
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                                    📚 Cite
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="getCitation({{ doc[0] }}, 'apa')">APA Format</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="getCitation({{ doc[0] }}, 'mla')">MLA Format</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="getCitation({{ doc[0] }}, 'bibtex')">BibTeX Format</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('export_bibtex', doc_id=doc[0]) }}">📥 Download BibTeX</a></li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            No documents assigned to you yet. 
+            <a href="{{ url_for('all_documents') }}">Browse all documents</a> to request access.
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Function for annotations
+function addAnnotation(docId, filename) {
+    let annotation = prompt(`✏️ Add annotation for "${filename}":\n\nType your research note below:`);
+    if(annotation && annotation.trim().length > 0) {
+        fetch('/add_annotation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                document_id: docId,
+                annotation_text: annotation,
+                highlight_text: "Manual annotation",
+                page_number: 1,
+                category: 'general'
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                alert(`✅ Annotation saved successfully!\n\n"${annotation}"`);
+            } else {
+                alert('Error saving annotation. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving annotation. Make sure you are logged in.');
+        });
+    }
+}
+
+// Function for citations
+function getCitation(docId, style) {
+    fetch(`/get_citation/${docId}/${style}`)
+        .then(response => response.json())
+        .then(data => {
+            if(data.citation) {
+                alert(`${style.toUpperCase()} Citation:\n\n${data.citation}`);
+            } else {
+                alert('Citation not available for this document');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error fetching citation');
+        });
+}
+</script>
+
+<!-- Add Bootstrap JS for dropdown -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

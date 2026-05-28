@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card p-5">
+            <h2 class="text-center mb-3">📝 Create Account</h2>
+            <p class="text-center text-light mb-4">Register as a new user. Admin will approve your account.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Email (optional)</label>
+                    <input type="email" name="email" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <button class="btn btn-primary w-100 mt-3">Register</button>
+            </form>
+
+            <a href="{{ url_for('login', role='user') }}" class="btn btn-outline-secondary w-100 mt-3">← Back to Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

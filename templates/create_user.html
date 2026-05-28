@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h2 class="text-center mb-3">👥 Create New User</h2>
+                <p class="text-center text-muted mb-4">Add a new user to the system</p>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endwith %}
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label>Username</label>
+                        <input type="text" name="username" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mt-3">Create User</button>
+                </form>
+
+                <hr class="mt-4">
+
+                <div class="mt-3">
+                    <h5>Existing Users</h5>
+                    {% if users %}
+                        <div class="table-responsive">
+                            <table class="table table-dark table-striped table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user[0] }}</td>
+                                        <td>
+                                            <a href="{{ url_for('delete_user', username=user[0]) }}" 
+                                               class="btn btn-sm btn-danger"
+                                               onclick="return confirm('Delete {{ user[0] }}?')">
+                                                Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No users created yet.</p>
+                    {% endif %}
+                </div>
+
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary w-100 mt-3">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

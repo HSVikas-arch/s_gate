@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Welcome, {{ session.user }}! 👋</h2>
+    <p class="text-muted">Research Document Management System</p>
+
+    <div class="row mt-4">
+        <!-- My Documents -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">📄</div>
+                    <h5 class="card-title mt-2">My Documents</h5>
+                    <p class="card-text">View your assigned research papers</p>
+                    <a href="{{ url_for('my_uploads') }}" class="btn btn-primary m-2">📤 My Uploads</a>
+                    <a href="{{ url_for('upload_my_document') }}" class="btn btn-success m-2">➕ Upload Document</a>
+                    <a href="{{ url_for('documents') }}" class="btn btn-primary">View Documents</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Browse All Documents -->
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">🔍</div>
+                    <h5 class="card-title mt-2">Browse All Documents</h5>
+                    <p class="card-text">Request access to new research papers</p>
+                    <a href="{{ url_for('all_documents') }}" class="btn btn-primary">Browse & Request</a>
+                </div>
+            </div>
+        </div>
+
+    <div class="row mt-3">
+        <!-- How to Use Annotations -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">✏️ How to Add Annotations</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="mb-0">
+                        <li>Open any document from <strong>My Documents</strong></li>
+                        <li>Select/highlight any text in the PDF</li>
+                        <li>A prompt will appear asking for your annotation</li>
+                        <li>Type your note and save</li>
+                        <li>Search all your notes using the button below</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Annotations -->
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">🔎 Search Your Annotations</h5>
+                </div>
+                <div class="card-body text-center">
+                    <p>Find notes across all your research papers</p>
+                    <button class="btn btn-success" onclick="searchAnnotations()">Search Annotations</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- How to Get Citations -->
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">📚 Get Citations</h5>
+                </div>
+                <div class="card-body">
+                    <p>When viewing any document, click the <strong>"Cite"</strong> button to get citations in:</p>
+                    <span class="badge bg-primary me-2">APA Format</span>
+                    <span class="badge bg-primary me-2">MLA Format</span>
+                    <span class="badge bg-primary">BibTeX Format</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function searchAnnotations() {
+    let query = prompt("Enter search term (min 3 characters):", "");
+    if(query && query.length >= 3) {
+        fetch(`/search_annotations?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(results => {
+                if(results.length === 0) {
+                    alert("No annotations found for: " + query);
+                } else {
+                    let message = "Found " + results.length + " annotation(s):\n\n";
+                    results.forEach(r => {
+                        message += `📄 ${r.document_name}\n`;
+                        message += `📝 ${r.annotation_text.substring(0, 100)}\n`;
+                        message += `📅 ${r.created_time}\n\n`;
+                    });
+                    alert(message);
+                }
+            })
+            .catch(error => {
+                alert("Error searching annotations. Make sure you have added some annotations first!");
+            });
+    } else if(query) {
+        alert("Please enter at least 3 characters");
+    }
+}
+</script>
+{% endblock %}

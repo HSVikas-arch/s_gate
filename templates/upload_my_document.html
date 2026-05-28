@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="text-center mb-3">📤 Upload Your Document</h2>
+            <p class="text-center text-light">Store your research papers securely</p>
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label>Select Document (PDF)</label>
+                    <input type="file" name="file" class="form-control" accept=".pdf" required>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="is_public" class="form-check-input" id="is_public">
+                    <label class="form-check-label" for="is_public">Make document public (visible to all users)</label>
+                </div>
+                <button class="btn btn-primary w-100">Upload Document</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>⏳ Pending User Approvals</h2>
+    <p class="text-muted">Users waiting for approval to access the system</p>
+
+    {% if users %}
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr><th>ID</th><th>Username</th><th>Email</th><th>Registered Date</th><th>Actions</th></tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[0] }}</td>
+                        <td>{{ user[1] }}</td>
+                        <td>{{ user[2] or '-' }}</td>
+                        <td>{{ user[3] }}</td>
+                        <td>
+                            <a href="{{ url_for('approve_user', user_id=user[0]) }}" class="btn btn-sm btn-success">✅ Approve</a>
+                            <a href="{{ url_for('reject_user', user_id=user[0]) }}" class="btn btn-sm btn-danger">❌ Reject</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">No pending user registrations.</div>
+    {% endif %}
+</div>
+{% endblock %}
