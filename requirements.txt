@@ -1,0 +1,15 @@
+flask
+flask-jwt-extended
+sqlalchemy
+cryptography
+gunicorn
+
+# New packages for lab notebook features
+flask-sqlalchemy
+flask-migrate
+psycopg2-binary
+pypdf2
+pdfplumber
+whoosh
+flask-wtf
+bcrypt
