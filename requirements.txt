@@ -13,3 +13,4 @@ pdfplumber
 whoosh
 flask-wtf
 bcrypt
+pytz==2024.1
