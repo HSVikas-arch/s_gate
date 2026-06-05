@@ -4,9 +4,20 @@ from cryptography.fernet import Fernet
 import os, sqlite3, datetime, re, hashlib
 from werkzeug.utils import secure_filename
 import pdfplumber
+import pytz
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-change-in-production')
+
+# ==================== TIMEZONE SETUP (ADD THIS BLOCK HERE) ====================
+# Set Indian Standard Time (IST)
+IST = pytz.timezone('Asia/Kolkata')
+
+def get_ist_time():
+    """Returns current IST time as formatted string"""
+    from datetime import datetime
+    return datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
 
 # ==================== CONFIGURATION ====================
 UPLOAD_FOLDER = "uploads"
@@ -99,9 +110,11 @@ def admin_required(f):
 def log_action(username, action):
     try:
         conn = get_db()
-        c = conn.cursor()
-        c.execute("INSERT INTO audit_logs(username, action, time) VALUES(?,?,?)",
-                  (username, action, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        conn = get_db()
+        IST = pytz.timezone('Asia/Kolkata')
+        current_time = datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")
+        conn.cursor().execute("INSERT INTO audit_logs(username, action, time) VALUES(?,?,?)",
+                              (username, action, current_time))
         conn.commit()
         conn.close()
         print(f"✅ Logged: {username} - {action}")  # Debug print
@@ -121,7 +134,7 @@ def register():
         try:
             c.execute("INSERT INTO users(username, password, email, registered_date) VALUES(?,?,?,?)",
                       (request.form['username'], request.form['password'], request.form.get('email', ''),
-                       datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                       datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")))
             conn.commit()
             flash("Registration successful! Wait for admin approval.", "success")
             return redirect(url_for("login"))
@@ -213,7 +226,7 @@ def upload_my_document():
             conn = get_db()
             c = conn.cursor()
             c.execute("INSERT INTO documents(filename, uploaded_by, upload_time, is_public) VALUES(?,?,?,?)",
-                      (filename, session['user'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), is_public))
+                      (filename, session['user'], datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S"), is_public))
             doc_id = c.lastrowid
             if not is_public:
                 c.execute("INSERT INTO document_access(document_id, username) VALUES(?,?)", (doc_id, session['user']))
@@ -328,12 +341,34 @@ def get_citation(doc_id, style):
 @login_required
 def export_bibtex(doc_id):
     conn = get_db()
-    doc = conn.cursor().execute("SELECT filename, doi, journal, authors, publication_year FROM documents WHERE id=?", (doc_id,)).fetchone()
+    c = conn.cursor()
+    doc = c.execute("SELECT filename, doi, journal, authors, publication_year FROM documents WHERE id=?", (doc_id,)).fetchone()
     conn.close()
-    if doc:
-        bibtex = generate_citation(doc, 'bibtex')
-        return send_file(bibtex.encode(), mimetype='text/plain', as_attachment=True, download_name=f"{doc[0].replace('.pdf', '')}.bib")
-    return "Not found", 404
+    
+    if not doc:
+        flash("Document not found", "danger")
+        return redirect(url_for("documents"))
+    
+    authors = doc[3] or 'Unknown'
+    year = doc[4] or 'n.d.'
+    title = doc[0].replace('.pdf', '')
+    journal = doc[2] or ''
+    doi = doc[1] or ''
+    
+    citation_id = hashlib.md5(title.encode()).hexdigest()[:8]
+    
+    bibtex = f"""@article{{{citation_id},
+    author = {{{authors}}},
+    title = {{{title}}},
+    journal = {{{journal}}},
+    year = {{{year}}},
+    doi = {{{doi}}}
+}}"""
+    
+    response = app.make_response(bibtex)
+    response.mimetype = 'text/plain'
+    response.headers['Content-Disposition'] = f'attachment; filename={title}.bib'
+    return response
 
 # ==================== ANNOTATIONS ====================
 @app.route("/add_annotation", methods=["POST"])
@@ -385,7 +420,7 @@ def request_access(doc_id):
     c = conn.cursor()
     if not c.execute("SELECT * FROM access_requests WHERE username=? AND document_id=? AND status='pending'", (session["user"], doc_id)).fetchone():
         c.execute("INSERT INTO access_requests(username, document_id, requested_time) VALUES(?,?,?)",
-                  (session["user"], doc_id, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                  (session["user"], doc_id, datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")))
         log_action(session['user'], f"Requested access to document {doc_id}")
         flash("Request sent to admin!", "success")
     conn.commit()
@@ -475,7 +510,7 @@ def upload():
             conn = get_db()
             c = conn.cursor()
             c.execute("INSERT INTO documents(filename, uploaded_by, upload_time) VALUES(?,?,?)",
-                      (filename, session['user'], datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+                      (filename, session['user'], datetime.now(IST).strftime("%Y-%m-%d %H:%M:%S")))
             doc_id = c.lastrowid
             for user in request.form.getlist("allowed_users"):
                 c.execute("INSERT INTO document_access(document_id, username) VALUES(?,?)", (doc_id, user))
