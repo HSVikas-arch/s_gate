@@ -1,0 +1,18 @@
+
+services:
+  # Service 1: Your Flask Web Application
+  securegate-web:
+    build: .                          # Tells Docker to build using the Dockerfile in this directory
+    image: securegate-app:latest      # Names the generated image
+    ports:
+      - "5000:5000"                   # Maps port 5000 of your laptop to port 5000 of the container
+    restart: always                   # Automatically restarts the app if it crashes
+    volumes:
+      - .:/app                        # Live-syncs your project folder (changes show instantly!)
+    environment:
+      - FLASK_ENV=development
+
+  # Service 2: A Dedicated Database Service (Example using Redis for lightning-fast caching/logs)
+  securegate-db:
+    image: redis:7-alpine             # Uses an ultra-lightweight Redis cache database image
+    restart: always

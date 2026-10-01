@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">🛡️ Blocked Entity Management</h2>
+    <a href="/dashboard" class="btn btn-outline-secondary">← Back to Dashboard</a>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <h4 class="mb-3">Blocked IP Addresses</h4>
+        {% if blocked_ips %}
+            <div class="row row-cols-1 g-3">
+            {% for ip in blocked_ips %}
+                <div class="col">
+                    <div class="card box-crimson p-3 d-flex flex-row justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <span style="font-size: 1.5rem; margin-right: 15px;">🌐</span>
+                            <span class="text-white fw-bold">{{ ip[0] }}</span>
+                        </div>
+                        <a href="{{ url_for('unblock', type='ip', value=ip[0]) }}" class="btn btn-emerald btn-sm">Unblock</a>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="card p-4 text-center box-emerald">
+                <p class="mb-0">No blocked IP addresses.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <h4 class="mb-3">Blocked Users</h4>
+        {% if blocked_users %}
+            <div class="row row-cols-1 g-3">
+            {% for user in blocked_users %}
+                <div class="col">
+                    <div class="card box-crimson p-3 d-flex flex-row justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <span style="font-size: 1.5rem; margin-right: 15px;">👤</span>
+                            <span class="text-white fw-bold">{{ user[0] }}</span>
+                        </div>
+                        <a href="{{ url_for('unblock', type='user', value=user[0]) }}" class="btn btn-emerald btn-sm">Unblock</a>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="card p-4 text-center box-emerald">
+                <p class="mb-0">No blocked users.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

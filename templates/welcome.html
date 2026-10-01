@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6 text-center">
+
+    <div class="card p-5">
+      <div style="font-size:40px; margin-bottom:1rem;">🔐</div>
+      <h2 class="mb-2">Welcome to SecureGate</h2>
+      <p class="text-light mb-4">Select an option to use the services</p>
+
+      <div class="d-flex justify-content-center gap-4">
+
+        <a href="{{ url_for('login', role='admin') }}"
+           class="card p-4 text-center text-decoration-none text-white"
+           style="min-width:140px; cursor:pointer;">
+          <div style="font-size:32px; margin-bottom:8px;">🛡️</div>
+          <div style="font-size:17px; font-weight:500;">Admin</div>
+          <div style="font-size:12px; opacity:0.6; margin-top:4px;">Full access</div>
+        </a>
+
+        <a href="{{ url_for('register') }}" class="btn btn-info p-4 text-center" style="min-width:140px;">
+          <div style="font-size:32px;">📝</div>
+          <div>Register</div>
+          <div style="font-size:12px;">Create account</div>
+        </a>
+       
+        <a href="{{ url_for('login', role='user') }}"
+           class="card p-4 text-center text-decoration-none text-white"
+           style="min-width:140px; cursor:pointer;">
+          <div style="font-size:32px; margin-bottom:8px;">👤</div>
+          <div style="font-size:17px; font-weight:500;">User</div>
+          <div style="font-size:12px; opacity:0.6; margin-top:4px;">Document access</div>
+        </a>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

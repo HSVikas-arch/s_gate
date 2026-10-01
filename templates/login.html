@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+
+<div class="col-md-5">
+
+<div class="card p-5">
+
+<h2 class="text-center mb-3">
+  {% if role == 'admin' %}
+    🛡️ Admin Login
+  {% else %}
+    👤 User Login
+  {% endif %}
+</h2>
+
+<p class="text-center text-light mb-4">
+  {% if role == 'admin' %}
+    Sign in with your administrator credentials to access the full control panel.
+  {% else %}
+    Sign in to access your assigned documents securely.
+  {% endif %}
+</p>
+
+<form method="POST">
+
+<input type="hidden" name="role" value="{{ role }}">
+
+<div class="mb-3">
+<label>Username</label>
+<input type="text" name="username" class="form-control" required>
+</div>
+
+<div class="mb-3">
+<label>Password</label>
+<input type="password" name="password" class="form-control" required>
+</div>
+
+<button class="btn btn-primary w-100 mt-3">
+  {% if role == 'admin' %}
+    Access Admin Portal
+  {% else %}
+    Access Secure Portal
+  {% endif %}
+</button>
+
+{% if error %}
+<div class="alert alert-danger mt-3">
+{{ error }}
+</div>
+{% endif %}
+
+</form>
+
+<a href="{{ url_for('home') }}" class="btn btn-outline-secondary w-100 mt-3">← Back to Welcome</a>
+
+<hr class="mt-4">
+
+<p class="text-center text-light">
+"Security is not a product, but a continuous process of protection and vigilance."
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}

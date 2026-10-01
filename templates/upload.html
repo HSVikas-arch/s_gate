@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card p-4">
+            <h2 class="text-center mb-3">📤 Upload Document (Admin)</h2>
+            <p class="text-center text-light">Upload documents and assign access to users</p>
+
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label>Select Document (PDF)</label>
+                    <input type="file" name="file" class="form-control" accept=".pdf" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label>Allow Access To (Select multiple):</label>
+                    <select name="allowed_users" class="form-control" multiple size="5">
+                        {% for user in users %}
+                            <option value="{{ user[0] }}">{{ user[0] }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">Hold Ctrl to select multiple users</small>
+                </div>
+                
+                <button class="btn btn-primary w-100">Upload Document</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

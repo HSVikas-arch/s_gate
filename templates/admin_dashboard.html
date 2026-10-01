@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Admin Dashboard</h2>
+    <p class="text-muted">Welcome, {{ session.user }}! 👋</p>
+
+    <!-- Combined Login Stats Card -->
+    <div class="row mt-4">
+        <div class="col-md-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">📊</div>
+                    <h3>Login Statistics</h3>
+                    <p class="text-muted">All authentication activity</p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <h4>Total Attempts</h4>
+                            <p class="display-6" id="totalAttempts">-</p>
+                            <small class="text-muted">All login attempts</small>
+                        </div>
+                        <div class="col-6">
+                            <h4>Successful</h4>
+                            <p class="display-6 text-success" id="successfulLogins">-</p>
+                            <small class="text-muted">Verified user access</small>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('view_logs') }}" class="btn btn-primary mt-3">View Detailed Logs</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combined Security Management Card -->
+        <div class="col-md-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">🛡️</div>
+                    <h3>Security Management</h3>
+                    <p class="text-muted">Blocked IPs and Users</p>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <h4>Blocked IPs</h4>
+                            <p class="display-6" id="blockedIPs">-</p>
+                            <small class="text-muted">IP addresses blocked</small>
+                        </div>
+                        <div class="col-6">
+                            <h4>Blocked Users</h4>
+                            <p class="display-6" id="blockedUsers">-</p>
+                            <small class="text-muted">User accounts blocked</small>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('blocked_management') }}" class="btn btn-primary mt-3">Manage Security</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest of your dashboard cards -->
+    <div class="row mt-4">
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">👥</div>
+                    <h5 class="card-title">User Management</h5>
+                    <p class="card-text">Create, approve, and manage users</p>
+                    <a href="{{ url_for('create_user') }}" class="btn btn-primary m-1">Create User</a>
+                    <a href="{{ url_for('registered_users') }}" class="btn btn-info m-1">All Users</a>
+                    <a href="{{ url_for('pending_users') }}" class="btn btn-warning m-1">
+                        Pending ({{ pending_users }})
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">📄</div>
+                    <h5 class="card-title">Document Management</h5>
+                    <p class="card-text">Upload and manage documents</p>
+                    <a href="{{ url_for('upload') }}" class="btn btn-primary m-1">Upload Document</a>
+                    <a href="{{ url_for('documents') }}" class="btn btn-info m-1">All Documents</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">📬</div>
+                    <h5 class="card-title">Access Requests</h5>
+                    <p class="card-text">Approve or deny document access</p>
+                    <a href="{{ url_for('view_access_requests') }}" class="btn btn-primary">
+                        View Requests
+                        {% if pending_requests > 0 %}
+                            <span class="badge bg-danger">{{ pending_requests }}</span>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <div style="font-size: 48px;">📈</div>
+                    <h5 class="card-title">System Statistics</h5>
+                    <p class="card-text">View overall system stats and analytics</p>
+                    <a href="{{ url_for('admin_stats') }}" class="btn btn-primary">View Stats</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Fetch and display real-time data
+fetch('/admin_stats_data')
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('totalAttempts').innerText = data.total_attempts || 0;
+        document.getElementById('successfulLogins').innerText = data.successful_logins || 0;
+        document.getElementById('blockedIPs').innerText = data.blocked_ips || 0;
+        document.getElementById('blockedUsers').innerText = data.blocked_users || 0;
+    })
+    .catch(error => console.error('Error fetching stats:', error));
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">📄 Request Logs</h2>
+    <a href="/dashboard" class="btn btn-outline-secondary">← Back to Dashboard</a>
+</div>
+
+{% if logs %}
+<div class="row row-cols-1 g-3">
+    {% for log in logs %}
+        {% set box_class = 'box-crimson' if log.threat == 'high' else 'box-amber' if log.threat == 'medium' else 'box-emerald' %}
+        <div class="col">
+            <div class="card {{ box_class }} p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-white me-2">IP: {{ log.ip }}</strong>
+                        <span class="text-muted"><i class="fa-solid fa-clock"></i> {{ log.time }}</span>
+                    </div>
+                    <span class="badge bg-secondary">{{ log.status }}</span>
+                </div>
+                <hr class="my-2 border-secondary" style="opacity: 0.1;">
+                <div class="d-flex justify-content-between">
+                    <span><i class="fa-solid fa-link me-2 text-muted"></i>{{ log.endpoint }}</span>
+                    <span class="text-uppercase fw-bold {{ 'text-danger' if log.threat == 'high' else 'text-warning' if log.threat == 'medium' else 'text-success' }}">
+                        Threat: {{ log.threat }}
+                    </span>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card p-5 text-center box-emerald">
+    <h4 class="mb-0">No Security Logs Recorded</h4>
+</div>
+{% endif %}
+{% endblock %}

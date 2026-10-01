@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>SecureGate - Security Monitoring System</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+    --bg-color-1: #0f172a; /* Slate */
+    --bg-color-2: #1e1b4b; /* Indigo */
+    --bg-color-3: #2e1065; /* Dark Purple */
+    --accent: #8b5cf6; /* Vivid Violet */
+    --accent-hover: #a78bfa;
+    --accent-cyan: #06b6d4; /* Vivid Cyan */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-color-1), var(--bg-color-2), var(--bg-color-3));
+    background-size: 200% 200%;
+    animation: gradientBG 15s ease infinite;
+    min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
+    color: #f8fafc;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.navbar {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 24px;
+    background: linear-gradient(to right, var(--accent-cyan), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    color: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.container {
+    margin-top: 60px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-cyan));
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--accent-hover), var(--accent-cyan));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+}
+
+.btn-outline-secondary {
+    border-color: var(--glass-border);
+    color: #cbd5e1;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background: var(--glass-bg);
+    color: #fff;
+    border-color: var(--accent);
+}
+
+.form-control, .form-select {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    color: #fff;
+    border-radius: 8px;
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: var(--accent);
+    color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25);
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+.table {
+    color: #fff;
+    background: transparent;
+}
+
+.table-dark {
+    background: transparent;
+}
+
+.table-dark th {
+    background: rgba(0,0,0,0.4);
+    border-bottom: 2px solid var(--accent);
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+.table-striped>tbody>tr:nth-of-type(odd)>* {
+    color: #fff;
+    background: rgba(255,255,255,0.02);
+}
+
+.table-dark td {
+    background: transparent;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.table-hover>tbody>tr:hover>* {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+/* Typography global overrides for maximum visibility */
+h1, h2, h3, h4, h5, h6 { 
+    color: #ffffff !important; 
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+p, span, label, div {
+    color: #f1f5f9;
+}
+
+.text-muted {
+    color: #e2e8f0 !important; /* Lighter slate for strong visibility */
+}
+
+.text-light {
+    color: #f8fafc !important;
+}
+
+.text-white {
+    color: #ffffff !important;
+}
+
+.text-dark {
+    color: #0f172a !important; 
+}
+
+.badge.text-dark {
+    color: #0f172a !important;
+    font-weight: 700;
+}
+
+.card h5 {
+    color: #f8fafc !important;
+}
+
+.card h2 {
+    color: #ffffff !important;
+}
+
+a.text-white:hover {
+    color: var(--accent-cyan) !important;
+}
+
+.alert {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-left: 4px solid var(--accent);
+    color: #fff;
+}
+
+.alert-danger {
+    border-left-color: #ef4444; 
+}
+.alert-success {
+    border-left-color: #10b981;
+}
+
+/* 3-Color Card Modifiers for Box layout */
+.box-emerald {
+    border-top: 4px solid #10b981;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+}
+.box-amber {
+    border-top: 4px solid #f59e0b;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.15);
+}
+.box-crimson {
+    border-top: 4px solid #ef4444;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+}
+
+.box-emerald h5, .box-emerald .icon { color: #10b981 !important; }
+.box-amber h5, .box-amber .icon { color: #f59e0b !important; }
+.box-crimson h5, .box-crimson .icon { color: #ef4444 !important; }
+
+.btn-emerald { background: linear-gradient(135deg, #10b981, #059669); border:none; color:#fff;}
+.btn-emerald:hover { background: linear-gradient(135deg, #059669, #047857); color:#fff; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);}
+
+.btn-amber { background: linear-gradient(135deg, #f59e0b, #d97706); border:none;  color:#fff;}
+.btn-amber:hover { background: linear-gradient(135deg, #d97706, #b45309);  color:#fff; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4);}
+
+.btn-crimson { background: linear-gradient(135deg, #ef4444, #dc2626); border:none;  color:#fff;}
+.btn-crimson:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); color:#fff; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(239, 68, 68, 0.4);}
+
+</style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg">
+<div class="container-fluid">
+
+  <a class="navbar-brand text-white">🔐 SecureGate</a>
+
+  <div class="navbar-nav ms-auto">
+
+    {% if session.get('role') == 'admin' %}
+
+      <!-- Admin: Only essential nav links -->
+      <a class="nav-link text-white" href="/dashboard">Dashboard</a>
+      <a class="nav-link text-white" href="/logout">Logout</a>
+
+    {% elif session.get('role') == 'user' %}
+
+      <!-- User: Only essential nav links -->
+      <a class="nav-link text-white" href="/dashboard">Dashboard</a>
+      <a class="nav-link text-white" href="/logout">Logout</a>
+
+    {% endif %}
+
+  </div>
+
+</div>
+</nav>
+
+<div class="container">
+
+{% block content %}
+
+{% endblock %}
+
+</div>
+<script>
+function searchAnnotationsNav() {
+    let query = prompt("Enter search term (min 3 characters):", "");
+    if(query && query.length >= 3) {
+        fetch(`/search_annotations?q=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(results => {
+                if(results.length === 0) {
+                    alert("No annotations found for: " + query);
+                } else {
+                    let message = "Found " + results.length + " annotation(s):\n\n";
+                    results.forEach(r => {
+                        message += `📄 ${r.document_name}\n`;
+                        message += `📝 ${r.annotation_text.substring(0, 100)}\n`;
+                        message += `📅 ${r.created_time}\n\n`;
+                    });
+                    alert(message);
+                }
+            })
+            .catch(error => {
+                alert("No annotations found. Add some by highlighting text in PDFs!");
+            });
+    } else if(query) {
+        alert("Please enter at least 3 characters");
+    }
+}
+</script>
+</body>
+</html>

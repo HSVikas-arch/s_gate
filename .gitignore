@@ -1,0 +1,5 @@
+*.pyc
+*.db
+secret.key
+uploads/
+__pycache__/
