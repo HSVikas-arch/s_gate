@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: securegate-deployment
+  namespace: default
+  labels:
+    app: securegate
+spec:
+  replicas: 3 # 📈 Permanently locks in your 3 parallel self-healing copies!
+  selector:
+    matchLabels:
+      app: securegate
+  template:
+    metadata:
+      labels:
+        app: securegate
+    spec:
+      containers:
+      - name: securegate-container
+        image: hsvikasarch/securegate-app:latest # Points to your container image configuration
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000 # Your Flask app's native background port
+        resources:
+          limits:
+            memory: "256Mi" # Keeps memory boundaries optimized for small cloud nodes
+            cpu: "500m"
